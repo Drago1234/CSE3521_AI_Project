@@ -35,19 +35,144 @@ ID | Action
 
 //Check if the given state is a goal state
 //Returns: true if is goal state, false otherwise
+/*
+goal state:
+1 2 3
+8 0 4
+7 6 5
+*/
 function is_goal_state(state) {
   ++helper_eval_state_count; //Keep track of how many states are evaluated (DO NOT REMOVE!)
-  
-  return /***Your code to check for goal state here!***/;
+  var expectedValue = [[1,2,3], [8,0,4], [7,6,5]];
+  for (var i = 0; i < 3; i++){
+    for (var j = 0; j < 3; j++){
+      if(!(state.grid[i][j] == expectedValue[i][j])){
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 //Find the list of actions that can be performed from the given state and the new
 //states that result from each of those actions
 //Returns: Array of successor objects (where each object has a valid actionID member and corresponding resultState member)
+  /*
+Input:
+  1 2 3   
+  0 8 4 
+  7 6 5
+Ouput:
+  0 2 3
+  1 8 4
+  7 6 5
+  
+  1 2 3
+  8 0 4
+  7 6 5
+
+  1 2 3
+  7 8 4
+  0 6 5
+  */
+
+  /*
+Input:
+  103 013 813 813 <-- last is te input
+  824 824 024 204
+  765 765 765 765
+Ouput:
+  803 813 813 813
+  214 024 240 264
+  765 765 765 705
+  */
 function find_successors(state) {
   ++helper_expand_state_count; //Keep track of how many states are expanded (DO NOT REMOVE!)
   
   let successors=[];
+
+  for(var i = 0; i < 3; i ++){
+    for(var j = 0; j < 3; j ++){
+      //i, j: Integer[0, 2]
+      /*
+      [i-1][j-1] [i-1][j] [i-1][j+1]
+      [i][j-1]   [i][j]   [i][j+1]
+      [i+1][j-1] [i+1][j] [i+1]j+1]
+      */
+      if(state.grid[i][j] == 0){
+        //Code: 1--> down, 2--> up, 3--> right, 4 --> left
+        //Look up, swap if it's valid action
+        if( (i - 1) >= 0 && (i - 1) <= 2){
+          //Make a deep copy of state
+           let newState={
+             grid : state.grid.map(x => x.slice(0)) 
+           };     
+           //Swap
+           var tmp = newState.grid[i][j];   
+           newState.grid[i][j] = newState.grid[i - 1][j];
+           newState.grid[i - 1][j] = tmp;  
+           //push to successor
+           successors.push({
+             actionID : 2,
+             resultState : newState
+           });      
+         }
+
+        //look down
+        if((i + 1) >= 0 && (i + 1) <= 2){
+          //Make a deep copy of state
+           let newState={
+             grid : state.grid.map(x => x.slice(0)) 
+           };     
+           //Swap
+           var tmp = newState.grid[i][j];   
+           newState.grid[i][j] = newState.grid[i + 1][j];
+           newState.grid[i + 1][j] = tmp;  
+           //push to successor
+           successors.push({
+             actionID : 1,
+             resultState : newState
+           });      
+         }     
+        
+        //look right
+        if((j - 1) >= 0 && (j - 1) <= 2){
+          //Make a deep copy of state
+           let newState={
+             grid : state.grid.map(x => x.slice(0)) 
+           };     
+           //Swap
+           var tmp = newState.grid[i][j];   
+           newState.grid[i][j] = newState.grid[i][j - 1];
+           newState.grid[i][j - 1] = tmp;  
+           //push to successor
+           successors.push({
+             actionID : 3,
+             resultState : newState
+           });      
+         }      
+
+        //look left
+        if((j + 1) >= 0 && (j + 1) <= 2){
+          //Make a deep copy of state
+           let newState={
+             grid : state.grid.map(x => x.slice(0)) 
+           };     
+           //Swap
+           var tmp = newState.grid[i][j];   
+           newState.grid[i][j] = newState.grid[i][j + 1];
+           newState.grid[i][j + 1] = tmp;  
+           //push to successor
+           successors.push({
+             actionID : 4,
+             resultState : newState
+           });      
+         }
+      }
+    }
+  }
+
+
 
   /***Your code to generate successors here!***/
 
