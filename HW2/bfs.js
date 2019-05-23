@@ -19,45 +19,60 @@ function breadth_first_search(initial_state) {
   /***Your code for breadth-first search here***/
   //Add the root node
   let actions = [];
-  let states = [initial_state];
-  //!!!push only work for Object!!!, so every queue and dequeue only store 1 action and 1 state
-  open.push({action: null, state: initial_state}); //actionsArr, stateArr, and cost
+  let states = [];
+
+  var node = {
+    action: null,
+    state: initial_state
+    predecessor: null
+  };
+
+  open.push(node);
   //Return if the root node is goal state
-  if(is_goal_state(initial_state)){
+  if(is_goal_state(node.state)){
     return {
       actions: actions, 
       states: states
     };
   }
+  
   //STEP: 3)
   //Loop
   var lenOpen = open.length;
+
   while (lenOpen>0){
     //STEP: 4)choose a leaf node and remove it from fringe
     //dequeue the first node
     var node = open.shift();
     //STEP: 6)add to closed set
-    //if (closed.)
-    closed.add(node); //Add chosen node to closed set
+    if (closed.has(node.state)){
+    //   closed.add(node.state); //Add chosen node to closed set
+    // }else {
+      continue;
+    }
     //STEP: 7)(Expand the chosen node and Add the action and state to fringe) iff not in fringe or closed set
     var neighbours = find_successors(node.state);
     var len = neighbours.length;
     for(var i = 0; i < len; i++){
-      //if not in closed set
-      var neighbour = {action:neighbours[i].actionID, 
-          state:neighbours[i].resultState
+      //Make a new node
+      var node = {
+        action:neighbours[i].actionID, 
+        state:neighbours[i].resultState,
+        predecessor: node
       };
-      if (!closed.has(neighbour)){
-        actions.concat(neighbour.action);
-        states.concat(neighbour.state);
-        open.push(neighbour);
+      if (!closed.has(node.state)){
+        actions.push(node.action);
+        states.push(node.state);
+        open.push(node);
         //STEP: 5)if is goal states --> return solution
-        if(is_goal_state(neighbour.state)){
+        if(is_goal_state(node.state)){
           return{
             actions: actions,
             states: states
           };
         }
+      }else{
+        continue;
       }
     }
   }
@@ -70,12 +85,12 @@ function breadth_first_search(initial_state) {
       the states to store the predecessor/parent state they were generated from
       and the action that generates the child state from the predecessor state.
       
-	  For example, make a wrapper object that stores the state, predecessor and action.
-	  Javascript objects are easy to make:
-		let object={
-			member_name1 : value1,
-			member_name2 : value2
-		};
+    For example, make a wrapper object that stores the state, predecessor and action.
+    Javascript objects are easy to make:
+    let object={
+      member_name1 : value1,
+      member_name2 : value2
+    };
       
     Hint: Because of the way Javascript Set objects handle Javascript objects, you
       will need to insert (and check for) a representative value instead of the state
