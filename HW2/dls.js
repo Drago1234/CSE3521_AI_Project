@@ -9,12 +9,12 @@
 function depth_limited_search(initial_state, depth_limit) {
 
   //A node has actionsArr, stateArr, and cost, {[], [initial_state], 0}
-  //STEP: 1),2)Initialize the frontier and closed set
-  let frontier = []; //See push()/pop() and unshift()/shift() to operate like stack or queue
+  //STEP: 1),2)Initialize the open and closed set
+  let open = []; //See push()/pop() and unshift()/shift() to operate like stack or queue
                  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
   let closed = new Set(); //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
   // let successors = find_successors(initial_state);
-  // frontier.forEach(element =>{
+  // open.forEach(element =>{
   let path = {
     actions: [],
     states: [],
@@ -22,7 +22,7 @@ function depth_limited_search(initial_state, depth_limit) {
     };
     //The initialization should excluded the initial node
   path.states.push(initial_state);
-  frontier.push(path);
+  open.push(path);
   if(is_goal_state(initial_state)){
     return {
       actions: path.actions,
@@ -31,16 +31,16 @@ function depth_limited_search(initial_state, depth_limit) {
   }
   // });
 
-  //STEP: 3) Loop do while frontier is not empty
-  while(frontier.length > 0){
-    //STEP: 4) Choose a leaf node and remove it from frontier
-    let path = frontier.pop();
+  //STEP: 3) Loop do while open is not empty
+  while(open.length > 0){
+    //STEP: 4) Choose a leaf node and remove it from open
+    let path = open.pop();
     if(path.limit >= depth_limit){
       continue;
     }
-    console.log(path.limit)
+    // console.log(path.limit)
     let state = path.states[path.states.length-1];
-    //STEP: 7)(Expand the chosen node and Add the action and node to frontier) iff not in closed set
+    //STEP: 7)(Expand the chosen node and Add the action and node to open) iff not in closed set
     if(!closed.has(state_to_uniqueid(state))) {
       // console.log("state_to_uniqueid(state) is working!");
       //For each loop: Do, remove the 
@@ -60,7 +60,7 @@ function depth_limited_search(initial_state, depth_limit) {
         newPath.states.push(successors[i].resultState);
         newPath.limit = counter;
         //STEP: 5) Goal Test
-        frontier.push(newPath);
+        open.push(newPath);
         if(is_goal_state(successors[i].resultState)){
           return {
             actions: newPath.actions,

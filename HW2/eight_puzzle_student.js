@@ -188,44 +188,43 @@ function find_successors(state) {
 //////////////////////////////////////////////////////////////////////////////
 // Use these functions when developing your A* implementation
 
-//Heuristic functions for the 8-puzzle problem
-function calculate_heuristic(state) {
-  //Total Manhattan distance heuristic
-  let goal=[ [1, 2, 3], [8, 0, 4], [7, 6, 5] ];
+// //Heuristic functions for the 8-puzzle problem
+// function calculate_heuristic(state) {
+//   //Total Manhattan distance heuristic
+//   let goal=[ [1, 2, 3], [8, 0, 4], [7, 6, 5] ];
 
-  let g_pos=Array(9);
-  let st_pos=Array(9);
-  for(let j=0;j<3;++j)
-    for(let i=0;i<3;++i) {
-        g_pos[ goal[j][i] ]=[j,i];
-        st_pos[ state.grid[j][i] ]=[j,i];
-    }
+//   let g_pos=Array(9);
+//   let st_pos=Array(9);
+//   for(let j=0;j<3;++j)
+//     for(let i=0;i<3;++i) {
+//         g_pos[ goal[j][i] ]=[j,i];
+//         st_pos[ state.grid[j][i] ]=[j,i];
+//     }
 
-  let h=0;
-  for(let i=0;i<9;++i) {
-    h+=Math.abs( st_pos[i][0]-g_pos[i][0] )+Math.abs( st_pos[i][1]-g_pos[i][1] );
-  }
-  return h;
-}
+//   let h=0;
+//   for(let i=0;i<9;++i) {
+//     h+=Math.abs( st_pos[i][0]-g_pos[i][0] )+Math.abs( st_pos[i][1]-g_pos[i][1] );
+//   }
+//   return h;
+// }
 
-/*
-function calculate_heuristic(state) {
-  //Misplaced tiles heuristic
-  let goal=[ [1, 2, 3], [8, 0, 4], [7, 6, 5] ];
-  let h=0;
-  for(let j=0;j<3;++j)
-    for(let i=0;i<3;++i) {
-      if(state.grid[j][i]!=goal[j][i])
-        ++h;
-    }
-  if(h>0) --h; //Account for miscounted blank
-  return h;
-}
-*/
 
-/*
+// function calculate_heuristic(state) {
+//   //Misplaced tiles heuristic
+//   let goal=[ [1, 2, 3], [8, 0, 4], [7, 6, 5] ];
+//   let h=0;
+//   for(let j=0;j<3;++j)
+//     for(let i=0;i<3;++i) {
+//       if(state.grid[j][i]!=goal[j][i])
+//         ++h;
+//     }
+//   if(h>0) --h; //Account for miscounted blank
+//   return h;
+// }
+
+
+
 function calculate_heuristic(state) {
   //Simplest heuristic (h(n)=0)
   return 0;
 }
-*/
