@@ -7,7 +7,6 @@ By exchanging tiles adjacent to the blank space with the blank space, achieve th
  1 2 3
  8   4
  7 6 5
-
 State:
 {
   grid : Array(3,3), Integers [0,8]
@@ -17,7 +16,6 @@ where grid is a 2D array whose indices correspond to the following grid position
  [1][0] [1][1] [1][2]
  [2][0] [2][1] [2][2]
 The value 0 is used to represent the blank space, and 1-8 for the corresponding labeled tiles.
-
 Possible actions:
 ID | Action
 ---+----------------------
@@ -70,7 +68,6 @@ Ouput:
   1 2 3
   8 0 4
   7 6 5
-
   1 2 3
   7 8 4
   0 6 5
@@ -91,8 +88,8 @@ function find_successors(state) {
   
   let successors=[];
 
-  for(var i = 0; i < 3; i ++){
-    for(var j = 0; j < 3; j ++){
+  for(var i = 0; i < 3; ++i){
+    for(var j = 0; j < 3; ++j){
       //i, j: Integer[0, 2]
       /*
       [i-1][j-1] [i-1][j] [i-1][j+1]
@@ -108,12 +105,11 @@ function find_successors(state) {
              grid : state.grid.map(x => x.slice(0)) 
            };     
            //Swap
-           var tmp = newState.grid[i][j];   
            newState.grid[i][j] = newState.grid[i - 1][j];
-           newState.grid[i - 1][j] = tmp;  
+           newState.grid[i - 1][j] = 0;  
            //push to successor
            successors.push({
-             actionID : 2,
+             actionID : 1,
              resultState : newState
            });      
          }
@@ -125,12 +121,11 @@ function find_successors(state) {
              grid : state.grid.map(x => x.slice(0)) 
            };     
            //Swap
-           var tmp = newState.grid[i][j];   
            newState.grid[i][j] = newState.grid[i + 1][j];
-           newState.grid[i + 1][j] = tmp;  
+           newState.grid[i + 1][j] = 0;
            //push to successor
            successors.push({
-             actionID : 1,
+             actionID : 2,
              resultState : newState
            });      
          }     
@@ -141,10 +136,9 @@ function find_successors(state) {
            let newState={
              grid : state.grid.map(x => x.slice(0)) 
            };     
-           //Swap
-           var tmp = newState.grid[i][j];   
+           //Swap 
            newState.grid[i][j] = newState.grid[i][j - 1];
-           newState.grid[i][j - 1] = tmp;  
+           newState.grid[i][j - 1] = 0;  
            //push to successor
            successors.push({
              actionID : 3,
@@ -159,9 +153,8 @@ function find_successors(state) {
              grid : state.grid.map(x => x.slice(0)) 
            };     
            //Swap
-           var tmp = newState.grid[i][j];   
            newState.grid[i][j] = newState.grid[i][j + 1];
-           newState.grid[i][j + 1] = tmp;  
+           newState.grid[i][j + 1] = 0;  
            //push to successor
            successors.push({
              actionID : 4,
@@ -219,7 +212,6 @@ function calculate_heuristic(state) {
 function calculate_heuristic(state) {
   //Misplaced tiles heuristic
   let goal=[ [1, 2, 3], [8, 0, 4], [7, 6, 5] ];
-
   let h=0;
   for(let j=0;j<3;++j)
     for(let i=0;i<3;++i) {

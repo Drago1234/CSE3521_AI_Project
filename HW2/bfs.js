@@ -17,68 +17,55 @@ function breadth_first_search(initial_state) {
                  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
   let closed = new Set(); //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
   /***Your code for breadth-first search here***/
-  //Add the root node
-  let actions = [];
-  let states = [];
+  // if(is_goal_state(initial_state)){
+  //   return {
+  //     actions: path.actions,
+  //     states: path.states
+  //   };
+  // }
 
-  var node = {
-    action: null,
-    state: initial_state
-    predecessor: null
-  };
-
-  open.push(node);
-  //Return if the root node is goal state
-  if(is_goal_state(node.state)){
-    return {
-      actions: actions, 
-      states: states
-    };
-  }
-  
-  //STEP: 3)
-  //Loop
-  var lenOpen = open.length;
-
-  while (lenOpen>0){
-    //STEP: 4)choose a leaf node and remove it from fringe
-    //dequeue the first node
-    var node = open.shift();
-    //STEP: 6)add to closed set
-    if (closed.has(node.state)){
-    //   closed.add(node.state); //Add chosen node to closed set
-    // }else {
-      continue;
-    }
-    //STEP: 7)(Expand the chosen node and Add the action and state to fringe) iff not in fringe or closed set
-    var neighbours = find_successors(node.state);
-    var len = neighbours.length;
-    for(var i = 0; i < len; i++){
-      //Make a new node
-      var node = {
-        action:neighbours[i].actionID, 
-        state:neighbours[i].resultState,
-        predecessor: node
+  // let successors = find_successors(initial_state);
+  // open.forEach(element =>{
+    let path = {
+      actions: [],
+      states: []
       };
-      if (!closed.has(node.state)){
-        actions.push(node.action);
-        states.push(node.state);
-        open.push(node);
-        //STEP: 5)if is goal states --> return solution
-        if(is_goal_state(node.state)){
-          return{
-            actions: actions,
-            states: states
-          };
+      //The initialization should excluded the initial node
+    path.actions.push(null);
+    path.states.push(initial_state);
+    open.push(path);
+  // });
+
+
+  while(open.length > 0){
+    let path = open.shift();
+    let state = path.states[path.states.length-1];
+    if(!closed.has(state_to_uniqueid(state))) {
+      // console.log("state_to_uniqueid(state) is working!");
+      //For each loop: Do, remove the 
+      let successors = find_successors(state);
+      let len = successors.length;
+      for(let i = 0; i < len; i++){
+
+        let newPath = {
+          actions: [],
+          states: []
+        };
+        //make deep cody from path
+        newPath.actions = path.actions.slice(0);
+        newPath.states = path.states.slice(0);
+        newPath.actions.push(successors[i].actionID);
+        newPath.states.push(successors[i].resultState);
+        // console.log("Show the path", newPath.states);
+        open.push(newPath);
+        if(is_goal_state(successors[i].resultState)){
+          return newPath;
         }
-      }else{
-        continue;
       }
+      closed.add(state_to_uniqueid(state));
+
     }
   }
-
-
-
 
   /*
     Hint: In order to generate the solution path, you will need to augment
@@ -104,6 +91,6 @@ function breadth_first_search(initial_state) {
   /***Your code to generate solution path here***/
 
   //No solution found
-  console.log("No solution found!\n")
+  console.log("No solution found!\n");
   return null;
 }
