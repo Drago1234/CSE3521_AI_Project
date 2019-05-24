@@ -12,34 +12,31 @@
   //  });
 function breadth_first_search(initial_state) {
   //A node has actionsArr, stateArr, and cost, {[], [initial_state], 0}
-  //STEP: 1),2)
-  let open = []; //See push()/pop() and unshift()/shift() to operate like stack or queue
+  //STEP: 1),2)Initialize the frontier and closed set
+  let frontier = []; //See push()/pop() and unshift()/shift() to operate like stack or queue
                  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
   let closed = new Set(); //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
   /***Your code for breadth-first search here***/
-  // if(is_goal_state(initial_state)){
-  //   return {
-  //     actions: path.actions,
-  //     states: path.states
-  //   };
-  // }
-
   // let successors = find_successors(initial_state);
-  // open.forEach(element =>{
+  // frontier.forEach(element =>{
     let path = {
       actions: [],
       states: []
       };
       //The initialization should excluded the initial node
-    path.actions.push(null);
     path.states.push(initial_state);
-    open.push(path);
+    frontier.push(path);
+    if(is_goal_state(initial_state)){
+      return path;
+    }
   // });
 
-
-  while(open.length > 0){
-    let path = open.shift();
+  //STEP: 3) Loop do while frontier is not empty
+  while(frontier.length > 0){
+    //STEP: 4) Choose a leaf node and remove it from frontier
+    let path = frontier.shift();
     let state = path.states[path.states.length-1];
+    //STEP: 7)(Expand the chosen node and Add the action and node to frontier) iff not in closed set
     if(!closed.has(state_to_uniqueid(state))) {
       // console.log("state_to_uniqueid(state) is working!");
       //For each loop: Do, remove the 
@@ -56,14 +53,14 @@ function breadth_first_search(initial_state) {
         newPath.states = path.states.slice(0);
         newPath.actions.push(successors[i].actionID);
         newPath.states.push(successors[i].resultState);
-        // console.log("Show the path", newPath.states);
-        open.push(newPath);
+        //STEP: 5) Goal Test
+        frontier.push(newPath);
         if(is_goal_state(successors[i].resultState)){
           return newPath;
         }
       }
+      //STEP: 6)Add to closed set
       closed.add(state_to_uniqueid(state));
-
     }
   }
 
