@@ -6,21 +6,74 @@
 //  actions: Sequence(Array) of action ids required to reach the goal state from the initial state
 //  states: Sequence(Array) of states that are moved through, ending with the reached goal state (and EXCLUDING the initial state)
 //  The actions and states arrays should both have the same length.
-function depth_limited_search(initial_state,depth_limit) {
+function depth_limited_search(initial_state, depth_limit) {
 
-  /***Your code for depth-limited search here!***/
-  
-  /***DO NOT do repeated state or loop checking!***/
-  
-  /*
-    Hint: You may implement DLS either iteratively (with open set) or recursively.
-    
-    In the iterative case, you will need to do similar to breadth-first search and augment
-    the state. In addition to predecessor and action, you will also need to store depth.
-    (You should be able to re-use your BFS code and only make a small amount of changes to
-     accomplish this. Be sure to remove repeat checking!)
+  //A node has actionsArr, stateArr, and cost, {[], [initial_state], 0}
+  //STEP: 1),2)Initialize the frontier and closed set
+  let frontier = []; //See push()/pop() and unshift()/shift() to operate like stack or queue
+                 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+  let closed = new Set(); //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+  // let successors = find_successors(initial_state);
+  // frontier.forEach(element =>{
+  let path = {
+    actions: [],
+    states: [],
+    limit: 0
+    };
+    //The initialization should excluded the initial node
+  path.states.push(initial_state);
+  frontier.push(path);
+  if(is_goal_state(initial_state)){
+    return {
+      actions: path.actions,
+      states: path.states
+    };
+  }
+  // });
 
-    In the recursive case, you don't need the above. Building the solution path is a little
-    trickier, but I suggest you look into the Array.unshift() function.
-  */
+  //STEP: 3) Loop do while frontier is not empty
+  while(frontier.length > 0){
+    //STEP: 4) Choose a leaf node and remove it from frontier
+    let path = frontier.pop();
+    if(path.limit >= depth_limit){
+      continue;
+    }
+    console.log(path.limit)
+    let state = path.states[path.states.length-1];
+    //STEP: 7)(Expand the chosen node and Add the action and node to frontier) iff not in closed set
+    if(!closed.has(state_to_uniqueid(state))) {
+      // console.log("state_to_uniqueid(state) is working!");
+      //For each loop: Do, remove the 
+      let successors = find_successors(state);
+      let counter = path.limit + 1; //Increment the counter in 
+      for(let i = 0; i < successors.length; i++){
+
+        let newPath = {
+          actions: [],
+          states: [],
+          limit: 0
+        };
+        //make deep cody from path
+        newPath.actions = path.actions.slice(0);
+        newPath.states = path.states.slice(0);
+        newPath.actions.push(successors[i].actionID);
+        newPath.states.push(successors[i].resultState);
+        newPath.limit = counter;
+        //STEP: 5) Goal Test
+        frontier.push(newPath);
+        if(is_goal_state(successors[i].resultState)){
+          return {
+            actions: newPath.actions,
+            states: newPath.states
+          };
+        }
+      }
+      //STEP: 6)Add to closed set
+      closed.add(state_to_uniqueid(state));
+    }
+  }
+
+  //No solution found
+  console.log("No solution found! (Hint: Try a larger limit)\n");
+  return null;
 }
